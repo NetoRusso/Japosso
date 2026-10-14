@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Já Posso Agora?</title>
+    <!-- Tailwind CSS para estilização moderna e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Efeito Glassmorphism refinado */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        /* Animação suave para alteração de números */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        .glow-bg {
+            animation: pulseGlow 6s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between items-center relative overflow-x-hidden selection:bg-indigo-500 selection:text-white">
+
+    <!-- Círculos de luz decorativos de fundo (Glassmorphism ambient) -->
+    <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none glow-bg"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none glow-bg" style="animation-delay: 3s;"></div>
+
+    <!-- Cabeçalho -->
+    <header class="w-full max-w-4xl mx-auto pt-12 pb-4 px-6 text-center z-10">
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-3">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">27 de Dezembro de 2026</span>
+        </h1>
+        <p class="text-slate-400 text-sm sm:text-base max-w-lg mx-auto">
+            Acompanhe o tempo exato que falta para esta data especial em tempo real.
+        </p>
+    </header>
+
+    <!-- Área Principal do Contador -->
+    <main class="w-full max-w-4xl mx-auto px-6 py-8 z-10 flex flex-col items-center justify-center flex-grow">
+        <div id="countdown-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 w-full max-w-3xl">
+            
+            <!-- Dias -->
+            <div class="glass-card rounded-2xl p-6 text-center flex flex-col items-center justify-center transform transition duration-300 hover:scale-105">
+                <span id="days" class="text-4xl sm:text-6xl font-black text-white tracking-tight mb-1">00</span>
+                <span class="text-xs sm:text-sm font-medium uppercase tracking-widest text-indigo-300">Dias</span>
+            </div>
+
+            <!-- Horas -->
+            <div class="glass-card rounded-2xl p-6 text-center flex flex-col items-center justify-center transform transition duration-300 hover:scale-105">
+                <span id="hours" class="text-4xl sm:text-6xl font-black text-white tracking-tight mb-1">00</span>
+                <span class="text-xs sm:text-sm font-medium uppercase tracking-widest text-indigo-300">Horas</span>
+            </div>
+
+            <!-- Minutos -->
+            <div class="glass-card rounded-2xl p-6 text-center flex flex-col items-center justify-center transform transition duration-300 hover:scale-105">
+                <span id="minutes" class="text-4xl sm:text-6xl font-black text-white tracking-tight mb-1">00</span>
+                <span class="text-xs sm:text-sm font-medium uppercase tracking-widest text-indigo-300">Minutos</span>
+            </div>
+
+            <!-- Segundos -->
+            <div class="glass-card rounded-2xl p-6 text-center flex flex-col items-center justify-center transform transition duration-300 hover:scale-105">
+                <span id="seconds" class="text-4xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 tracking-tight mb-1">00</span>
+                <span class="text-xs sm:text-sm font-medium uppercase tracking-widest text-pink-300">Segundos</span>
+            </div>
+
+        </div>
+
+        <!-- Mensagem de Conclusão (Oculta por padrão, aparece se a data já tiver passado) -->
+        <div id="expired-message" class="hidden glass-card rounded-2xl p-8 text-center max-w-md w-full mt-4">
+            <div class="text-indigo-400 text-3xl mb-2"><i class="fa-solid fa-champagne-glasses"></i></div>
+            <h2 class="text-2xl font-bold text-white mb-2">A data chegou!</h2>
+            <p class="text-slate-400 text-sm">O momento esperado finalmente aconteceu.</p>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+
+    <!-- Script JavaScript para lógica do contador -->
+    <script>
+        // Data alvo: 27 de dezembro de 2026 às 00:00:00
+        const targetDate = new Date('2026-12-27T00:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            const daysEl = document.getElementById('days');
+            const hoursEl = document.getElementById('hours');
+            const minutesEl = document.getElementById('minutes');
+            const secondsEl = document.getElementById('seconds');
+            const containerEl = document.getElementById('countdown-container');
+            const expiredEl = document.getElementById('expired-message');
+
+            if (distance < 0) {
+                // Se a data já passou
+                containerEl.classList.add('hidden');
+                expiredEl.classList.remove('hidden');
+                return;
+            }
+
+            // Cálculos de tempo
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Atualiza os elementos formatando com zero à esquerda se menor que 10
+            daysEl.textContent = String(days).padStart(2, '0');
+            hoursEl.textContent = String(hours).padStart(2, '0');
+            minutesEl.textContent = String(minutes).padStart(2, '0');
+            secondsEl.textContent = String(seconds).padStart(2, '0');
+        }
+
+        // Executa imediatamente na carga da página
+        updateCountdown();
+
+        // Atualiza a cada 1 segundo
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
